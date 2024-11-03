@@ -11,7 +11,7 @@ import (
 func (p *PostgresSQL) InsertRequestLog(job_id string, payload interface{}) error {
 	data := payload.(core.RequestTypePayload)
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		return client.Exec(ctx, "INSERT INTO request_logs (job_id, status, request_url, request_method, request_headers, request_body, response_headers, response_body, response_status_code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", job_id, data.Status, data.RequestUrl, data.RequestMethod, data.RequestHeaders, data.RequestBody, data.ResponseHeaders, data.ResponseBody, data.ResponseStatusCode)
+		return client.Exec(ctx, "INSERT INTO request_log (job_id, status, request_url, request_method, request_headers, request_body, response_headers, response_body, response_status_code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", job_id, data.Status, data.RequestUrl, data.RequestMethod, data.RequestHeaders, data.RequestBody, data.ResponseHeaders, data.ResponseBody, data.ResponseStatusCode)
 	})
 	return err
 }
@@ -27,7 +27,7 @@ func (p *PostgresSQL) SelectRequestLogs(job_id, lastId string, limit int) ([]cor
 
 	data, dbErr := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (interface{}, error) {
 		logs := []core.RequestLog{}
-		rows, queryErr := client.Query(ctx, "SELECT id, job_id, status, request_url, request_method, response_status_code, created_at FROM request_logs WHERE created_at > $1 AND job_id = $2 ORDER BY created_at LIMIT $3", lastCreated, job_id, limit)
+		rows, queryErr := client.Query(ctx, "SELECT id, job_id, status, request_url, request_method, response_status_code, created_at FROM request_log WHERE created_at > $1 AND job_id = $2 ORDER BY created_at LIMIT $3", lastCreated, job_id, limit)
 
 		if queryErr != nil {
 			return nil, queryErr
@@ -55,7 +55,7 @@ func (p *PostgresSQL) SelectRequestLogs(job_id, lastId string, limit int) ([]cor
 func (p *PostgresSQL) SelectRequestLog(id, job_id string) (*core.FullRequestLog, error) {
 	log := core.FullRequestLog{}
 	_, dbErr := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (interface{}, error) {
-		queryErr := client.QueryRow(ctx, "SELECT id, job_id, status, request_url, request_method, request_headers, request_body, response_headers, response_body, response_status_code, created_at FROM request_logs WHERE id = $1 AND job_id = $2", id, job_id).Scan(
+		queryErr := client.QueryRow(ctx, "SELECT id, job_id, status, request_url, request_method, request_headers, request_body, response_headers, response_body, response_status_code, created_at FROM request_log WHERE id = $1 AND job_id = $2", id, job_id).Scan(
 			&log.Id,
 			&log.JobId,
 			&log.Status,

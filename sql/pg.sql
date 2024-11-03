@@ -1,8 +1,4 @@
-/*
-    sql for postgresql
-*/
-
-/* CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; */
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE job
 (
@@ -13,7 +9,8 @@ CREATE TABLE job
     author text NOT NULL,
     members text[],
     created_at timestamp with time zone NOT NULL DEFAULT now(),
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (id)
 );
 
 CREATE TABLE action
@@ -24,6 +21,7 @@ CREATE TABLE action
     created_at timestamp with time zone NOT NULL DEFAULT now(),
     job_id uuid NOT NULL,
     PRIMARY KEY (id),
+    UNIQUE (id)
 );
 
 CREATE TABLE trigger
@@ -34,9 +32,10 @@ CREATE TABLE trigger
     created_at timestamp with time zone NOT NULL DEFAULT now(),
     job_id uuid NOT NULL,
     PRIMARY KEY (id),
+    UNIQUE (id)
 );
 
-CREATE TABLE request_logs
+CREATE TABLE request_log
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     job_id uuid NOT NULL,
