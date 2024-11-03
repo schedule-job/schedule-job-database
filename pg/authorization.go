@@ -48,7 +48,7 @@ func (p *PostgresSQL) DeleteAuthorization(name string) error {
 	return nil
 }
 
-func (p *PostgresSQL) SelectAuthorizations() (*[]core.FullAuthorization, error) {
+func (p *PostgresSQL) SelectAuthorizations() ([]core.FullAuthorization, error) {
 	authorizations := []core.FullAuthorization{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
 		rows, queryErr := client.Query(ctx, "SELECT name, payload FROM authorization ORDER BY created_at desc")
@@ -71,5 +71,5 @@ func (p *PostgresSQL) SelectAuthorizations() (*[]core.FullAuthorization, error) 
 		return nil, err
 	}
 
-	return &authorizations, nil
+	return authorizations, nil
 }
