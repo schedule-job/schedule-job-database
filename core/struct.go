@@ -53,6 +53,6 @@ type FullJob struct {
 }
 
 type FullAuthorization struct {
-	Name    string                 `json:"name"`
-	Payload map[string]interface{} `json:"payload"`
+	Name    string      `json:"name"`
+	Payload interface{} `json:"payload"`
 }
