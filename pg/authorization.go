@@ -8,7 +8,7 @@ import (
 	"github.com/schedule-job/schedule-job-database/core"
 )
 
-func (p *PostgresSQL) InsertAuthorization(name string, payload map[string]interface{}) error {
+func (p *PostgresSQL) InsertAuthorization(name string, payload interface{}) error {
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
 		_, errExec := client.Exec(ctx, "INSERT INTO authorization (name, payload) VALUES ($1, $2)", name, payload)
 		if errExec != nil {
@@ -26,7 +26,7 @@ func (p *PostgresSQL) InsertAuthorization(name string, payload map[string]interf
 	return nil
 }
 
-func (p *PostgresSQL) UpdateAuthorization(name string, payload map[string]interface{}) error {
+func (p *PostgresSQL) UpdateAuthorization(name string, payload interface{}) error {
 	return p.InsertAuthorization(name, payload)
 }
 
