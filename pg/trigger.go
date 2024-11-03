@@ -8,7 +8,7 @@ import (
 	"github.com/schedule-job/schedule-job-database/core"
 )
 
-func (p *PostgresSQL) InsertTrigger(job_id, name string, payload map[string]interface{}) error {
+func (p *PostgresSQL) InsertTrigger(job_id, name string, payload map[string]string) error {
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
 		_, errExec := client.Exec(ctx, "INSERT INTO trigger (job_id, name, payload) VALUES ($1, $2, $3)", job_id, name, payload)
 		if errExec != nil {
@@ -26,7 +26,7 @@ func (p *PostgresSQL) InsertTrigger(job_id, name string, payload map[string]inte
 	return nil
 }
 
-func (p *PostgresSQL) UpdateTrigger(job_id, name string, payload map[string]interface{}) error {
+func (p *PostgresSQL) UpdateTrigger(job_id, name string, payload map[string]string) error {
 	return p.InsertTrigger(job_id, name, payload)
 }
 

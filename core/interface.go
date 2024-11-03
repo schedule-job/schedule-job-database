@@ -22,8 +22,8 @@ type Database interface {
 	SelectRequestLogs(job_id, last_id string, limit int) ([]RequestLog, error)
 
 	// trigger.go
-	InsertTrigger(job_id, name string, payload map[string]interface{}) error
-	UpdateTrigger(job_id, name string, payload map[string]interface{}) error
+	InsertTrigger(job_id, name string, payload map[string]string) error
+	UpdateTrigger(job_id, name string, payload map[string]string) error
 	DeleteTrigger(job_id string) error
 	SelectTrigger(job_id string) (*FullTrigger, error)
 
