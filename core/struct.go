@@ -51,3 +51,8 @@ type FullJob struct {
 	Members     []string  `json:"members"`
 	CreatedAt   time.Time `json:"createdAt"`
 }
+
+type FullAuthorization struct {
+	Name    string                 `json:"name"`
+	Payload map[string]interface{} `json:"payload"`
+}

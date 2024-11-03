@@ -51,3 +51,13 @@ CREATE TABLE request_log
     PRIMARY KEY (id),
     UNIQUE (id)
 );
+
+CREATE TABLE authorization
+(
+    id uuid NOT NULL DEFAULT uuid_generate_v4(),
+    name text NOT NULL,
+    payload json,
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    PRIMARY KEY (id),
+    UNIQUE (id)
+);

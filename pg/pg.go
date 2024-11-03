@@ -12,9 +12,9 @@ type PostgresSQL struct {
 	Dsn string
 }
 
-func (pg *PostgresSQL) usePostgresSQL(callback func(client *pgx.Conn, ctx context.Context) (result interface{}, err error)) (result interface{}, err error) {
+func (p *PostgresSQL) usePostgresSQL(callback func(client *pgx.Conn, ctx context.Context) (result interface{}, err error)) (result interface{}, err error) {
 	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, pg.Dsn)
+	conn, err := pgx.Connect(ctx, p.Dsn)
 
 	if err != nil {
 		panic(err)

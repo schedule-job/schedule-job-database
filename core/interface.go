@@ -22,4 +22,9 @@ type Database interface {
 	UpdateTrigger(job_id, name string, payload map[string]interface{}) error
 	DeleteTrigger(job_id string) error
 	SelectTrigger(job_id string) (*FullTrigger, error)
+
+	InsertAuthorization(name string, payload map[string]interface{}) error
+	UpdateAuthorization(name string, payload map[string]interface{}) error
+	DeleteAuthorization(name string) error
+	SelectAuthorizations() ([]FullAuthorization, error)
 }
