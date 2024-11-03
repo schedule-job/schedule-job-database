@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/schedule-job/schedule-job-database/core"
 )
 
 type PostgresSQL struct {
+	core.Database
 	Dsn string
 }
 

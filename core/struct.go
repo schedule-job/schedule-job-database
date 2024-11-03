@@ -2,7 +2,7 @@ package core
 
 import "time"
 
-type Log struct {
+type RequestLog struct {
 	Id                 string    `json:"id"`
 	JobId              string    `json:"jobId"`
 	Status             string    `json:"status"`
@@ -12,8 +12,8 @@ type Log struct {
 	CreatedAt          time.Time `json:"createdAt"`
 }
 
-type FullLog struct {
-	Log
+type FullRequestLog struct {
+	RequestLog
 	RequestHeaders  map[string][]string `json:"requestHeaders"`
 	RequestBody     string              `json:"requestBody"`
 	ResponseHeaders map[string][]string `json:"responseHeaders"`
@@ -31,14 +31,10 @@ type RequestTypePayload struct {
 	ResponseStatusCode int
 }
 
-type Trigger struct {
+type FullTrigger struct {
+	JobId   string            `json:"jobId"`
 	Name    string            `json:"name"`
 	Payload map[string]string `json:"payload"`
-}
-
-type FullTrigger struct {
-	Trigger
-	JobId string `json:"jobId"`
 }
 
 type FullAction struct {
@@ -48,7 +44,7 @@ type FullAction struct {
 }
 
 type FullJob struct {
-	JobID       string    `json:"job_id"`
+	JobID       string    `json:"jobId"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Author      string    `json:"author"`

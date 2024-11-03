@@ -2,7 +2,6 @@ package pg
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/jackc/pgx/v5"
@@ -68,32 +67,6 @@ func (p *PostgresSQL) SelectTrigger(job_id string) (*core.FullTrigger, error) {
 	if err != nil {
 		log.Fatalln(err.Error())
 		return nil, err
-	}
-
-	return &info, nil
-}
-
-func (p *PostgresSQL) GetSchedule(job_id string) (*core.Trigger, error) {
-	data, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		info := core.Trigger{}
-		queryErr := client.QueryRow(ctx, "SELECT name, payload FROM trigger WHERE job_id = $1 ORDER BY created_at desc", job_id).Scan(
-			&info.Name,
-			&info.Payload,
-		)
-		if queryErr != nil {
-			return nil, queryErr
-		}
-		return info, nil
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	info, check := data.(core.Trigger)
-
-	if !check {
-		return nil, errors.New("failed")
 	}
 
 	return &info, nil
