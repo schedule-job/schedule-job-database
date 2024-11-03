@@ -31,25 +31,37 @@ type RequestTypePayload struct {
 	ResponseStatusCode int
 }
 
-type FullTrigger struct {
-	JobId   string            `json:"jobId"`
+type Trigger struct {
 	Name    string            `json:"name"`
 	Payload map[string]string `json:"payload"`
 }
 
-type FullAction struct {
-	JobId   string                 `json:"jobId"`
+type FullTrigger struct {
+	Trigger
+	JobId string `json:"jobId"`
+}
+
+type Action struct {
 	Name    string                 `json:"name"`
 	Payload map[string]interface{} `json:"payload"`
 }
 
+type FullAction struct {
+	Action
+	JobId string `json:"jobId"`
+}
+
+type Job struct {
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Author      string   `json:"author"`
+	Members     []string `json:"members"`
+}
+
 type FullJob struct {
-	JobID       string    `json:"jobId"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Author      string    `json:"author"`
-	Members     []string  `json:"members"`
-	CreatedAt   time.Time `json:"createdAt"`
+	Job
+	JobID     string    `json:"jobId"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type FullAuthorization struct {
