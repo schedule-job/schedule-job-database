@@ -27,4 +27,7 @@ type Database interface {
 	UpdateAuthorization(name string, payload interface{}) error
 	DeleteAuthorization(name string) error
 	SelectAuthorizations() ([]FullAuthorization, error)
+
+	SelectAgentUrls() ([]string, error)
+	SelectBatchUrls() ([]string, error)
 }

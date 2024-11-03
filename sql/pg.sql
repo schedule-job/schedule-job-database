@@ -61,3 +61,13 @@ CREATE TABLE authorization
     PRIMARY KEY (id),
     UNIQUE (id)
 );
+
+CREATE TABLE url
+(
+    id uuid NOT NULL DEFAULT uuid_generate_v4(),
+    category text NOT NULL,
+    url text NOT NULL,
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    PRIMARY KEY (id),
+    UNIQUE (id)
+) 
