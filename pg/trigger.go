@@ -2,10 +2,10 @@ package pg
 
 import (
 	"context"
-	"log"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/schedule-job/schedule-job-database/core"
+	schedule_errors "github.com/schedule-job/schedule-job-errors"
 )
 
 func (p *PostgresSQL) InsertTrigger(job_id, name string, payload map[string]string) error {
@@ -19,8 +19,7 @@ func (p *PostgresSQL) InsertTrigger(job_id, name string, payload map[string]stri
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return err
+		return &schedule_errors.QueryError{Err: err}
 	}
 
 	return nil
@@ -41,8 +40,7 @@ func (p *PostgresSQL) DeleteTrigger(job_id string) error {
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return err
+		return &schedule_errors.QueryError{Err: err}
 	}
 
 	return nil
@@ -65,8 +63,7 @@ func (p *PostgresSQL) SelectTrigger(job_id string) (*core.FullTrigger, error) {
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return nil, err
+		return nil, &schedule_errors.QueryError{Err: err}
 	}
 
 	return &info, nil

@@ -2,10 +2,10 @@ package pg
 
 import (
 	"context"
-	"log"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/schedule-job/schedule-job-database/core"
+	schedule_errors "github.com/schedule-job/schedule-job-errors"
 )
 
 func (p *PostgresSQL) InsertAuthorization(name string, payload interface{}) error {
@@ -19,8 +19,7 @@ func (p *PostgresSQL) InsertAuthorization(name string, payload interface{}) erro
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return err
+		return &schedule_errors.QueryError{Err: err}
 	}
 
 	return nil
@@ -41,8 +40,7 @@ func (p *PostgresSQL) DeleteAuthorization(name string) error {
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return err
+		return &schedule_errors.QueryError{Err: err}
 	}
 
 	return nil
@@ -68,7 +66,7 @@ func (p *PostgresSQL) SelectAuthorizations() ([]core.FullAuthorization, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, &schedule_errors.QueryError{Err: err}
 	}
 
 	return authorizations, nil

@@ -6,6 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/schedule-job/schedule-job-database/core"
+	schedule_errors "github.com/schedule-job/schedule-job-errors"
 )
 
 func (p *PostgresSQL) InsertRequestLog(job_id string, payload interface{}) error {
@@ -13,7 +14,10 @@ func (p *PostgresSQL) InsertRequestLog(job_id string, payload interface{}) error
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
 		return client.Exec(ctx, "INSERT INTO request_log (job_id, status, request_url, request_method, request_headers, request_body, response_headers, response_body, response_status_code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", job_id, data.Status, data.RequestUrl, data.RequestMethod, data.RequestHeaders, data.RequestBody, data.ResponseHeaders, data.ResponseBody, data.ResponseStatusCode)
 	})
-	return err
+	if err != nil {
+		return &schedule_errors.QueryError{Err: err}
+	}
+	return nil
 }
 
 func (p *PostgresSQL) SelectRequestLogs(job_id, lastId string, limit int) ([]core.RequestLog, error) {
@@ -25,8 +29,8 @@ func (p *PostgresSQL) SelectRequestLogs(job_id, lastId string, limit int) ([]cor
 		}
 	}
 
-	data, dbErr := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (interface{}, error) {
-		logs := []core.RequestLog{}
+	logs := []core.RequestLog{}
+	_, dbErr := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (interface{}, error) {
 		rows, queryErr := client.Query(ctx, "SELECT id, job_id, status, request_url, request_method, response_status_code, created_at FROM request_log WHERE created_at > $1 AND job_id = $2 ORDER BY created_at LIMIT $3", lastCreated, job_id, limit)
 
 		if queryErr != nil {
@@ -46,10 +50,10 @@ func (p *PostgresSQL) SelectRequestLogs(job_id, lastId string, limit int) ([]cor
 	})
 
 	if dbErr != nil {
-		return nil, dbErr
+		return nil, &schedule_errors.QueryError{Err: dbErr}
 	}
 
-	return data.([]core.RequestLog), nil
+	return logs, nil
 }
 
 func (p *PostgresSQL) SelectRequestLog(id, job_id string) (*core.FullRequestLog, error) {
@@ -77,7 +81,7 @@ func (p *PostgresSQL) SelectRequestLog(id, job_id string) (*core.FullRequestLog,
 	})
 
 	if dbErr != nil {
-		return nil, dbErr
+		return nil, &schedule_errors.QueryError{Err: dbErr}
 	}
 
 	return &log, nil

@@ -2,11 +2,11 @@ package pg
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/schedule-job/schedule-job-database/core"
+	schedule_errors "github.com/schedule-job/schedule-job-errors"
 )
 
 func (p *PostgresSQL) InsertJob(name, description, author string, members []string) (string, error) {
@@ -21,8 +21,7 @@ func (p *PostgresSQL) InsertJob(name, description, author string, members []stri
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return "", err
+		return "", &schedule_errors.QueryError{Err: err}
 	}
 
 	return job_id, nil
@@ -39,8 +38,7 @@ func (p *PostgresSQL) UpdateJob(job_id, name, description, author string, member
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return err
+		return &schedule_errors.QueryError{Err: err}
 	}
 
 	return nil
@@ -57,8 +55,7 @@ func (p *PostgresSQL) DeleteJob(job_id string) error {
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return err
+		return &schedule_errors.QueryError{Err: err}
 	}
 
 	return nil
@@ -83,8 +80,7 @@ func (p *PostgresSQL) SelectJob(job_id string) (*core.FullJob, error) {
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return nil, err
+		return nil, &schedule_errors.QueryError{Err: err}
 	}
 
 	return &job, nil
@@ -127,8 +123,7 @@ func (p *PostgresSQL) SelectJobs(user, lastId string, limit int) (*[]core.FullJo
 	})
 
 	if err != nil {
-		log.Fatalln(err.Error())
-		return nil, err
+		return nil, &schedule_errors.QueryError{Err: err}
 	}
 
 	return &jobs, nil

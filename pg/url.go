@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
+	schedule_errors "github.com/schedule-job/schedule-job-errors"
 )
 
 func (p *PostgresSQL) selectUrls(category string) ([]string, error) {
@@ -26,7 +27,7 @@ func (p *PostgresSQL) selectUrls(category string) ([]string, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, &schedule_errors.QueryError{Err: err}
 	}
 
 	return urls, nil
