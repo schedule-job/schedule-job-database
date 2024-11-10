@@ -31,7 +31,7 @@ func (p *PostgresSQL) UpdateAuthorization(name string, payload interface{}) erro
 
 func (p *PostgresSQL) DeleteAuthorization(name string) error {
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		_, errExec := client.Exec(ctx, "DELETE FROM authorization WHERE name = $1", name)
+		_, errExec := client.Exec(ctx, "DELETE FROM authorizations WHERE name = $1", name)
 		if errExec != nil {
 			return nil, errExec
 		}
@@ -49,7 +49,7 @@ func (p *PostgresSQL) DeleteAuthorization(name string) error {
 func (p *PostgresSQL) SelectAuthorizations() ([]core.FullAuthorization, error) {
 	authorizations := []core.FullAuthorization{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		rows, queryErr := client.Query(ctx, "SELECT name, payload FROM authorization ORDER BY created_at desc")
+		rows, queryErr := client.Query(ctx, "SELECT name, payload FROM authorizations ORDER BY created_at desc")
 		if queryErr != nil {
 			return nil, queryErr
 		}

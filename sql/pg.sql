@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE job
+CREATE TABLE jobs
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     job_id uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -13,7 +13,7 @@ CREATE TABLE job
     UNIQUE (id)
 );
 
-CREATE TABLE action
+CREATE TABLE actions
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     name text NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE action
     UNIQUE (id)
 );
 
-CREATE TABLE trigger
+CREATE TABLE triggers
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     name text NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE trigger
     UNIQUE (id)
 );
 
-CREATE TABLE request_log
+CREATE TABLE request_logs
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     job_id uuid NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE request_log
     UNIQUE (id)
 );
 
-CREATE TABLE authorization
+CREATE TABLE authorizations
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     name text NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE authorization
     UNIQUE (id)
 );
 
-CREATE TABLE url
+CREATE TABLE urls
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     category text NOT NULL,

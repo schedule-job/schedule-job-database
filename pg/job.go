@@ -46,7 +46,7 @@ func (p *PostgresSQL) UpdateJob(job_id, name, description, author string, member
 
 func (p *PostgresSQL) DeleteJob(job_id string) error {
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		_, errExec := client.Exec(ctx, "DELETE FROM job WHERE job_id = $1", job_id)
+		_, errExec := client.Exec(ctx, "DELETE FROM jobs WHERE job_id = $1", job_id)
 		if errExec != nil {
 			return nil, errExec
 		}
@@ -64,7 +64,7 @@ func (p *PostgresSQL) DeleteJob(job_id string) error {
 func (p *PostgresSQL) SelectJob(job_id string) (*core.FullJob, error) {
 	job := core.FullJob{JobID: job_id}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		errQuery := client.QueryRow(ctx, "SELECT name, description, author, members, created_at FROM job WHERE job_id = $1 ORDER BY created_at desc", job_id).Scan(
+		errQuery := client.QueryRow(ctx, "SELECT name, description, author, members, created_at FROM jobs WHERE job_id = $1 ORDER BY created_at desc", job_id).Scan(
 			&job.Name,
 			&job.Description,
 			&job.Author,
@@ -97,7 +97,7 @@ func (p *PostgresSQL) SelectJobs(user, lastId string, limit int) (*[]core.FullJo
 
 	jobs := []core.FullJob{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		rows, errQuery := client.Query(ctx, "SELECT t1.job_id, t1.name, t1.description, t1.author, t1.members, t1.created_at FROM job t1 INNER JOIN ( SELECT job_id, MAX(created_at) AS latest_date FROM job GROUP BY job_id ) t2 ON t1.job_id = t2.job_id AND t1.created_at = t2.latest_date WHERE created_at > $2 AND ($1 = t1.author OR $1 = ANY(t1.members)) ORDER BY created_at LIMIT $3", user, lastCreated, limit)
+		rows, errQuery := client.Query(ctx, "SELECT t1.job_id, t1.name, t1.description, t1.author, t1.members, t1.created_at FROM jobs t1 INNER JOIN ( SELECT job_id, MAX(created_at) AS latest_date FROM jobs GROUP BY job_id ) t2 ON t1.job_id = t2.job_id AND t1.created_at = t2.latest_date WHERE created_at > $2 AND ($1 = t1.author OR $1 = ANY(t1.members)) ORDER BY created_at LIMIT $3", user, lastCreated, limit)
 
 		if errQuery != nil {
 			return nil, errQuery

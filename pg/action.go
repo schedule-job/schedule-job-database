@@ -29,7 +29,7 @@ func (p *PostgresSQL) UpdateAction(job_id, name string, payload map[string]inter
 
 func (p *PostgresSQL) DeleteAction(job_id string) error {
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		_, errExec := client.Exec(ctx, "DELETE FROM action WHERE job_id = $1", job_id)
+		_, errExec := client.Exec(ctx, "DELETE FROM actions WHERE job_id = $1", job_id)
 		if errExec != nil {
 			return nil, errExec
 		}
@@ -44,7 +44,7 @@ func (p *PostgresSQL) DeleteAction(job_id string) error {
 func (p *PostgresSQL) SelectAction(job_id string) (*core.FullAction, error) {
 	info := core.FullAction{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		errQuery := client.QueryRow(ctx, "SELECT job_id, name, payload FROM action WHERE job_id = $1 ORDER BY created_at desc", job_id).Scan(
+		errQuery := client.QueryRow(ctx, "SELECT job_id, name, payload FROM actions WHERE job_id = $1 ORDER BY created_at desc", job_id).Scan(
 			&info.JobId,
 			&info.Name,
 			&info.Payload,
@@ -67,7 +67,7 @@ func (p *PostgresSQL) SelectAction(job_id string) (*core.FullAction, error) {
 func (p *PostgresSQL) SelectIdsByAction() ([]string, error) {
 	ids := []string{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		rows, queryErr := client.Query(ctx, "SELECT job_id FROM action ORDER BY created_at desc")
+		rows, queryErr := client.Query(ctx, "SELECT job_id FROM actions ORDER BY created_at desc")
 		if queryErr != nil {
 			return nil, queryErr
 		}
@@ -92,7 +92,7 @@ func (p *PostgresSQL) SelectIdsByAction() ([]string, error) {
 func (p *PostgresSQL) SelectActions() (*[]core.FullAction, error) {
 	requests := []core.FullAction{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		rows, queryErr := client.Query(ctx, "SELECT job_id, name, payload FROM action ORDER BY created_at desc")
+		rows, queryErr := client.Query(ctx, "SELECT job_id, name, payload FROM actions ORDER BY created_at desc")
 		if queryErr != nil {
 			return nil, queryErr
 		}

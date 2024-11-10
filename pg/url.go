@@ -10,7 +10,7 @@ import (
 func (p *PostgresSQL) selectUrls(category string) ([]string, error) {
 	urls := []string{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		rows, queryErr := client.Query(ctx, "SELECT url FROM url WHERE category = $1 ORDER BY created_at desc", category)
+		rows, queryErr := client.Query(ctx, "SELECT url FROM urls WHERE category = $1 ORDER BY created_at desc", category)
 		if queryErr != nil {
 			return nil, queryErr
 		}

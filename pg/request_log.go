@@ -31,7 +31,7 @@ func (p *PostgresSQL) SelectRequestLogs(job_id, lastId string, limit int) ([]cor
 
 	logs := []core.RequestLog{}
 	_, dbErr := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (interface{}, error) {
-		rows, queryErr := client.Query(ctx, "SELECT id, job_id, status, request_url, request_method, response_status_code, created_at FROM request_log WHERE created_at > $1 AND job_id = $2 ORDER BY created_at LIMIT $3", lastCreated, job_id, limit)
+		rows, queryErr := client.Query(ctx, "SELECT id, job_id, status, request_url, request_method, response_status_code, created_at FROM request_logs WHERE created_at > $1 AND job_id = $2 ORDER BY created_at LIMIT $3", lastCreated, job_id, limit)
 
 		if queryErr != nil {
 			return nil, queryErr
@@ -59,7 +59,7 @@ func (p *PostgresSQL) SelectRequestLogs(job_id, lastId string, limit int) ([]cor
 func (p *PostgresSQL) SelectRequestLog(id, job_id string) (*core.FullRequestLog, error) {
 	log := core.FullRequestLog{}
 	_, dbErr := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (interface{}, error) {
-		queryErr := client.QueryRow(ctx, "SELECT id, job_id, status, request_url, request_method, request_headers, request_body, response_headers, response_body, response_status_code, created_at FROM request_log WHERE id = $1 AND job_id = $2", id, job_id).Scan(
+		queryErr := client.QueryRow(ctx, "SELECT id, job_id, status, request_url, request_method, request_headers, request_body, response_headers, response_body, response_status_code, created_at FROM request_logs WHERE id = $1 AND job_id = $2", id, job_id).Scan(
 			&log.Id,
 			&log.JobId,
 			&log.Status,
