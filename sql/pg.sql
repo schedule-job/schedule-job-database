@@ -16,6 +16,7 @@ CREATE TABLE jobs
 CREATE TABLE actions
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+    type text NOT NULL,
     name text NOT NULL,
     payload json NOT NULL,
     created_at timestamp with time zone NOT NULL DEFAULT now(),

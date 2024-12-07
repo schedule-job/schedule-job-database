@@ -43,6 +43,7 @@ type FullTrigger struct {
 
 type Action struct {
 	Name    string                 `json:"name"`
+	Type    string                 `json:"type"`
 	Payload map[string]interface{} `json:"payload"`
 }
 

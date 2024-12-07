@@ -8,9 +8,9 @@ import (
 	schedule_errors "github.com/schedule-job/schedule-job-errors"
 )
 
-func (p *PostgresSQL) InsertAction(job_id, name string, payload map[string]interface{}) error {
+func (p *PostgresSQL) InsertAction(job_id, name, actionType string, payload map[string]interface{}) error {
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		_, errExec := client.Exec(ctx, "INSERT INTO action (job_id, name, payload) VALUES ($1, $2, $3)", job_id, name, payload)
+		_, errExec := client.Exec(ctx, "INSERT INTO action (job_id, name, type, payload,) VALUES ($1, $2, $3)", job_id, name, actionType, payload)
 		if errExec != nil {
 			return nil, errExec
 		}
@@ -23,8 +23,8 @@ func (p *PostgresSQL) InsertAction(job_id, name string, payload map[string]inter
 	return nil
 }
 
-func (p *PostgresSQL) UpdateAction(job_id, name string, payload map[string]interface{}) error {
-	return p.InsertAction(job_id, name, payload)
+func (p *PostgresSQL) UpdateAction(job_id, name, actionType string, payload map[string]interface{}) error {
+	return p.InsertAction(job_id, name, actionType, payload)
 }
 
 func (p *PostgresSQL) DeleteAction(job_id string) error {
@@ -44,9 +44,10 @@ func (p *PostgresSQL) DeleteAction(job_id string) error {
 func (p *PostgresSQL) SelectAction(job_id string) (*core.FullAction, error) {
 	info := core.FullAction{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		errQuery := client.QueryRow(ctx, "SELECT job_id, name, payload FROM actions WHERE job_id = $1 ORDER BY created_at desc", job_id).Scan(
+		errQuery := client.QueryRow(ctx, "SELECT job_id, name, type, payload FROM actions WHERE job_id = $1 ORDER BY created_at desc", job_id).Scan(
 			&info.JobId,
 			&info.Name,
+			&info.Type,
 			&info.Payload,
 		)
 
@@ -92,7 +93,7 @@ func (p *PostgresSQL) SelectIdsByAction() ([]string, error) {
 func (p *PostgresSQL) SelectActions() (*[]core.FullAction, error) {
 	requests := []core.FullAction{}
 	_, err := p.usePostgresSQL(func(client *pgx.Conn, ctx context.Context) (result interface{}, err error) {
-		rows, queryErr := client.Query(ctx, "SELECT job_id, name, payload FROM actions ORDER BY created_at desc")
+		rows, queryErr := client.Query(ctx, "SELECT job_id, name, type, payload FROM actions ORDER BY created_at desc")
 		if queryErr != nil {
 			return nil, queryErr
 		}
@@ -100,6 +101,7 @@ func (p *PostgresSQL) SelectActions() (*[]core.FullAction, error) {
 			request := core.FullAction{}
 			scanErr := rows.Scan(&request.JobId,
 				&request.Name,
+				&request.Type,
 				&request.Payload)
 			requests = append(requests, request)
 			if scanErr != nil {

@@ -2,8 +2,8 @@ package core
 
 type Database interface {
 	// action.go
-	InsertAction(job_id, name string, payload map[string]interface{}) error
-	UpdateAction(job_id, name string, payload map[string]interface{}) error
+	InsertAction(job_id, actionName, actionType string, payload map[string]interface{}) error
+	UpdateAction(job_id, actionName, actionType string, payload map[string]interface{}) error
 	DeleteAction(job_id string) error
 	SelectAction(job_id string) (*FullAction, error)
 	SelectActions() (*[]FullAction, error)
